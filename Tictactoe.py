@@ -1,13 +1,22 @@
 import copy
 from tkinter import *
+import tkinter.font as font
 
 board = [" " for x in range(10)]
 PMove = True
-Turn = 1
+
 
 root = Tk()
-main_label = Label(root, text="Welcome to TicTacToe")
-main_label.grid(row=1, column=0)
+myFont = font.Font(size='36', weight=font.BOLD)
+main_label = Label(root, text="Welcome to TicTacToe", font=myFont).grid(row=1, column=0, columnspan=3, sticky="ew")
+Grid.rowconfigure(root, 1, weight=1)
+Grid.rowconfigure(root, 2, weight=1)
+Grid.rowconfigure(root, 3, weight=1)
+Grid.rowconfigure(root, 4, weight=1)
+Grid.columnconfigure(root, 0, weight=1)
+Grid.columnconfigure(root, 1, weight=1)
+Grid.columnconfigure(root, 2, weight=1)
+
 
 def insert(spot, letter):
     global PMove
@@ -16,7 +25,7 @@ def insert(spot, letter):
     c = find_col(spot)
     board[spot] = letter
     if not PMove:
-        new_button = Button(root, text=board[spot]).grid(row=r, column=c)   
+        new_button = Button(root, text=board[spot], font=myFont).grid(row=r, column=c, sticky="nesw")   
     
 def isFree(spot):
     return board[spot] == " "
@@ -40,16 +49,17 @@ def find_col(spot):
     return c
 
 def showBoard():
-    t_l = Button(root, text=board[1], command=lambda: player_update(1)).grid(row=2, column=0)
-    t_m = Button(root, text=board[2], command=lambda: player_update(2)).grid(row=2, column=1)
-    t_r = Button(root, text=board[3], command=lambda: player_update(3)).grid(row=2, column=2)
-    m_l = Button(root, text=board[4], command=lambda: player_update(4)).grid(row=3, column=0)
-    m_m = Button(root, text=board[5], command=lambda: player_update(5)).grid(row=3, column=1)
-    m_r = Button(root, text=board[6], command=lambda: player_update(6)).grid(row=3, column=2)
-    b_l = Button(root, text=board[7], command=lambda: player_update(7)).grid(row=4, column=0)
-    b_m = Button(root, text=board[8], command=lambda: player_update(8)).grid(row=4, column=1)
-    b_r = Button(root, text=board[9], command=lambda: player_update(9)).grid(row=4, column=2)
+    t_l = Button(root, text=board[1], command=lambda: player_update(1)).grid(row=2, column=0, sticky="nesw")
+    t_m = Button(root, text=board[2], command=lambda: player_update(2)).grid(row=2, column=1, sticky="nesw")
+    t_r = Button(root, text=board[3], command=lambda: player_update(3)).grid(row=2, column=2, sticky="nesw")
+    m_l = Button(root, text=board[4], command=lambda: player_update(4)).grid(row=3, column=0, sticky="nesw")
+    m_m = Button(root, text=board[5], command=lambda: player_update(5)).grid(row=3, column=1, sticky="nesw")
+    m_r = Button(root, text=board[6], command=lambda: player_update(6)).grid(row=3, column=2, sticky="nesw")
+    b_l = Button(root, text=board[7], command=lambda: player_update(7)).grid(row=4, column=0, sticky="nesw")
+    b_m = Button(root, text=board[8], command=lambda: player_update(8)).grid(row=4, column=1, sticky="nesw")
+    b_r = Button(root, text=board[9], command=lambda: player_update(9)).grid(row=4, column=2, sticky="nesw")
     root.mainloop()
+    
 
 def player_update(spot):
     global Turn
@@ -62,9 +72,51 @@ def player_update(spot):
         if isFree(spot):
             insert (spot, "X")
             PMove = False
-            Turn += 1
-            new_button = Button(root, text=board[spot]).grid(row=r, column=c)
-            comMove()
+            new_button = Button(root, text=board[spot], font=myFont).grid(row=r, column=c, sticky="nesw")
+            if isWinner(board, "X") or isBoardfull(board):
+                endgame()
+            else:
+                comMove()
+
+def endgame():
+    global PMove
+
+    if isWinner(board, "X"):
+        t_l = Button(root, text="X", font=myFont).grid(row=2, column=0, sticky="nesw")
+        t_m = Button(root, text="X", font=myFont).grid(row=2, column=1, sticky="nesw")
+        t_r = Button(root, text="X", font=myFont).grid(row=2, column=2, sticky="nesw")
+        m_l = Button(root, text="X", font=myFont).grid(row=3, column=0, sticky="nesw")
+        m_m = Button(root, text="X", font=myFont).grid(row=3, column=1, sticky="nesw")
+        m_r = Button(root, text="X", font=myFont).grid(row=3, column=2, sticky="nesw")
+        b_l = Button(root, text="X", font=myFont).grid(row=4, column=0, sticky="nesw")
+        b_m = Button(root, text="X", font=myFont).grid(row=4, column=1, sticky="nesw")
+        b_r = Button(root, text="X", font=myFont).grid(row=4, column=2, sticky="nesw")
+        win_label = Label(root, text="congrats, X wins", font=myFont).grid(row=5, column=0, columnspan=3, sticky="ew")
+        root.mainloop()
+    elif isWinner(board, "O"):
+        t_l = Button(root, text="O", font=myFont).grid(row=2, column=0, sticky="nesw")
+        t_m = Button(root, text="O", font=myFont).grid(row=2, column=1, sticky="nesw")
+        t_r = Button(root, text="O", font=myFont).grid(row=2, column=2, sticky="nesw")
+        m_l = Button(root, text="O", font=myFont).grid(row=3, column=0, sticky="nesw")
+        m_m = Button(root, text="O", font=myFont).grid(row=3, column=1, sticky="nesw")
+        m_r = Button(root, text="O", font=myFont).grid(row=3, column=2, sticky="nesw")
+        b_l = Button(root, text="O", font=myFont).grid(row=4, column=0, sticky="nesw")
+        b_m = Button(root, text="O", font=myFont).grid(row=4, column=1, sticky="nesw")
+        b_r = Button(root, text="O", font=myFont).grid(row=4, column=2, sticky="nesw")
+        win_label = Label(root, text="Sorry, O wins", font=myFont).grid(row=5, column=0, columnspan=3, sticky="ew")
+        root.mainloop()
+    else:
+        t_l = Button(root, text="O", font=myFont).grid(row=2, column=0, sticky="nesw")
+        t_m = Button(root, text="X", font=myFont).grid(row=2, column=1, sticky="nesw")
+        t_r = Button(root, text="O", font=myFont).grid(row=2, column=2, sticky="nesw")
+        m_l = Button(root, text="X", font=myFont).grid(row=3, column=0, sticky="nesw")
+        m_m = Button(root, text="O", font=myFont).grid(row=3, column=1, sticky="nesw")
+        m_r = Button(root, text="X", font=myFont).grid(row=3, column=2, sticky="nesw")
+        b_l = Button(root, text="O", font=myFont).grid(row=4, column=0, sticky="nesw")
+        b_m = Button(root, text="X", font=myFont).grid(row=4, column=1, sticky="nesw")
+        b_r = Button(root, text="O", font=myFont).grid(row=4, column=2, sticky="nesw")
+        win_label = Label(root, text="Tie game", font=myFont).grid(row=5, column=0, columnspan=3, sticky="ew")
+
 
 
 def isWinner(b, l):
@@ -96,7 +148,10 @@ def comMove():
 
     insert(bestmove, "O")
     print("BestMove", bestmove)
-    PMove = True
+    if isWinner(board, "O") or isBoardfull(board):
+        endgame()
+    else:
+        PMove = True
     return
 
 
